@@ -4,17 +4,17 @@ const orm = require("./config/orm.js");
 function init() {
   return inquirer.prompt([
     {
-      type: "list",
-      name: "selectCRUDoperation",
-      message: "What would you like to do?",
-      choices: ["Create", "Read", "Update"],
+      type: 'list',
+      name: 'selectCRUDoperation',
+      message: 'What would you like to do?',
+      choices: ['Create', 'Read', 'Update'],
     } 
   ]).then(answer => {
-    if (answer === "Read") {
-      readOperation();
-    }
-    else if (answer === "Create") {
+    if (answer === 'Create') {
       createOperation();
+    }
+    else if (answer === 'Read') {
+      readOperation();
     }
     else updateOperation();
 });
