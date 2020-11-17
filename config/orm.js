@@ -13,6 +13,14 @@ class DB {
     );
   }
 
+   // Read all employees in a given department, join with roles to display role titles
+   readAllEmployeesByDepartment(departmentId) {
+    return this.connection.query(
+      "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department department on role.department_id = department.id WHERE department.id = ?;",
+      departmentId
+    );
+  }
+
   // Create a new employee
   createEmployee(employee) {
     return this.connection.query("INSERT INTO employee SET ?", employee);
@@ -26,6 +34,18 @@ class DB {
     );
   }
 
+  // Create a new role
+  createRole(role) {
+    return this.connection.query("INSERT INTO role SET ?", role);
+  }
+
+  // Read all roles, join with departments to display the department name
+  readAllRoles() {
+    return this.connection.query(
+    "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id;"
+    );
+  }
+
   // Update the given employee's role
   updateEmployeeRole(employeeId, roleId) {
     return this.connection.query(
@@ -34,29 +54,14 @@ class DB {
     );
   }
 
-  // Update the given employee's manager
-  // updateEmployeeManager(employeeId, managerId) {
-  //   return this.connection.query(
-  //     "UPDATE employee SET manager_id = ? WHERE id = ?",
-  //     [managerId, employeeId]
-  //   );
-  // }
-
-  // Read all roles, join with departments to display the department name
-  readAllRoles() {
-    return this.connection.query(
-      "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id;"
-    );
-  }
-
-  // Create a new role
-  createRole(role) {
-    return this.connection.query("INSERT INTO role SET ?", role);
-  }
-
   // Remove a role from the db
   deleteRole(roleId) {
     return this.connection.query("DELETE FROM role WHERE id = ?", roleId);
+  }
+
+  // Create a new department
+  createDepartment(department) {
+    return this.connection.query("INSERT INTO department SET ?", department);
   }
 
   // Read all departments, join with employees and roles and sum up utilized department budget
@@ -66,23 +71,10 @@ class DB {
     );
   }
 
-  // Create a new department
-  createDepartment(department) {
-    return this.connection.query("INSERT INTO department SET ?", department);
-  }
-
   // Delete a department
   deleteDepartment(departmentId) {
     return this.connection.query(
       "DELETE FROM department WHERE id = ?",
-      departmentId
-    );
-  }
-
-  // Read all employees in a given department, join with roles to display role titles
-  readAllEmployeesByDepartment(departmentId) {
-    return this.connection.query(
-      "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department department on role.department_id = department.id WHERE department.id = ?;",
       departmentId
     );
   }
