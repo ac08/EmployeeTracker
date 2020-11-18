@@ -65,26 +65,35 @@ async function loadPrompts() {
 
   // Call the function depending on user choice 
   switch (choice) {
-    case "READ_EMPLOYEES":
-      return readAllEmployees();
-    case "READ_EMPLOYEES_BY_DEPARTMENT":
-      return readAllEmployeesByDepartment();
     case "CREATE_EMPLOYEE":
       return createEmployee();
+    // done
+    case "READ_EMPLOYEES":
+      return readAllEmployees();
+    // done
+    case "READ_EMPLOYEES_BY_DEPARTMENT":
+      return readAllEmployeesByDepartment();
+    // done
     case "DELETE_EMPLOYEE":
       return deleteEmployee();
+    // done
     case "CREATE_EMPLOYEE_ROLE":
       return createRole();
+    // done
     case "READ_ALL_ROLES":
       return readAllRoles();
     case "UPDATE_EMPLOYEE_ROLE":
       return updateEmployeeRole(); 
+    // done
     case "DELETE_EMPLOYEE_ROLE":
       return deleteRole();
+    // done
     case "CREATE_DEPARTMENTS":
       return createDepartment();
+    // done
     case "READ_ALL_DEPARTMENTS":
       return readAllDepartments();
+    // done 
     case "DELETE_DEPARTMENT":
       return deleteDepartment();      
     default:
@@ -118,7 +127,7 @@ async function readAllEmployeesByDepartment() {
     }
   ]);
 
-  const employees = await orm.findAllEmployeesByDepartment(departmentId);
+  const employees = await orm.readAllEmployeesByDepartment(departmentId);
 
   console.log("\n");
   console.table(employees);
@@ -126,8 +135,8 @@ async function readAllEmployeesByDepartment() {
   loadPrompts();
 }
 
-async function removeEmployee() {
-  const employees = await db.findAllEmployees();
+async function deleteEmployee() {
+  const employees = await orm.readAllEmployees();
 
   const employeeChoices = employees.map(({ id, first_name, last_name }) => ({
     name: `${first_name} ${last_name}`,
@@ -143,29 +152,126 @@ async function removeEmployee() {
     }
   ]);
 
-  await db.removeEmployee(employeeId);
+  await db.deleteEmployee(employeeId);
 
   console.log("Removed employee from the database");
 
   loadPrompts();
 }
 
-async function addEmployee() {
-  const roles = await db.findAllRoles();
-  const employees = await db.findAllEmployees();
+async function createRole() {
+  const departments = await orm.readAllDepartments();
 
-  const employee = await prompt([
+  const departmentChoices = departments.map(({ id, name }) => ({
+    name: name, 
+    value: id
+  }));
+
+  const role = await prompt([
     {
-      name: "first_name",
-      message: "What is the employee's first name?"
+      name: "title", 
+      message: "Please enter the name of the role."
     },
     {
-      name: "last_name",
-      message: "What is the employee's last name?"
+      name: "salary",
+      message: "Please enter the salary for the role."
+    }, 
+    {
+      type: "list", 
+      name: "department_id", 
+      message: "Select the department for the role.",
+      choices: departmentChoices
     }
   ]);
+
+  await orm.createRole(role);
+
+  console.log(`Succesfully added ${role.title} to db`);
+
+  loadPrompts();
 }
 
+async function readAllRoles() {
+  const roles = await orm.readAllRoles();
+
+  console.log("\n");
+  console.table(roles);
+
+  loadPrompts();
+}
+
+
+async function deleteRole() {
+  const roles = await orm.readAllRoles();
+
+  const roleChoices = roles.map(({ title, id }) => ({
+    name: title,
+    value: id
+  }));
+
+  const { roleId } = await prompt([
+    {
+      type: "list",
+      name: "roleId",
+      message: "Which role do you want to remove (this is will remove all associated employees)?",
+      choices: roleChoices
+    }
+  ]);
+
+  await orm.deleteRole(roleId);
+
+  console.log("Removed role from the database");
+
+  loadPrompts();
+}
+
+async function createDepartment() {
+  const department = await prompt([
+    {
+      name: "name", 
+      message: "What is the name of the new department?"
+    }
+  ]);
+
+  await orm.createDepartment(department);
+  
+  console.log(`Added ${department.name} to the database`);
+
+  loadPrompts();
+}
+
+async function readAllDepartments() {
+  const departments = await orm.readAllDepartments();
+
+  console.log("\n");
+  console.table(departments);
+
+  loadPrompts();
+}
+
+
+async function deleteDepartment() {
+  const departments = await orm.readAllDepartments();
+
+  const departmentChoices = departments.map(({ name }) => ({
+    name: name,
+  }));
+
+  const { department } = await prompt([
+    {
+      type: "list",
+      name: "department",
+      message: "Which department do you want to remove (this is will remove all associated employees)?",
+      choices: departmentChoices
+    }
+  ]);
+
+  await orm.deleteDepartment(department);
+
+  console.log("Removed department from the database");
+
+  loadPrompts();
+}
 
 function quitProgram() {
   console.log("All Done!");
