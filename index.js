@@ -36,10 +36,6 @@ async function loadPrompts() {
           value: "READ_ALL_ROLES"
         },
         {
-          name: "Update Employee Role",
-          value: "UPDATE_EMPLOYEE_ROLE"
-        },
-        {
           name: "Delete Employee Role",
           value: "DELETE_EMPLOYEE_ROLE"
         },
@@ -77,8 +73,6 @@ async function loadPrompts() {
       return createRole();
     case "READ_ALL_ROLES":
       return readAllRoles();
-    case "UPDATE_EMPLOYEE_ROLE":
-      return updateEmployeeRole(); 
     case "DELETE_EMPLOYEE_ROLE":
       return deleteRole();
     case "CREATE_DEPARTMENTS":
