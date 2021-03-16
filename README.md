@@ -1,4 +1,4 @@
-# Employee Database Management
+# myEmployee
 
 The Employee Database Management is a Content Management System (CMS). The application applies ORM techniques and Node.js CLI to create an interface for non-developers to interact with a database(mySQL). The solution is meant to manage a company's employees using node, inquirer, MySQL.
 
@@ -34,7 +34,7 @@ To install and use the application please clone GitHub Repo to local machine. Th
 You are required to submit the following:
 
 * The URL of the GitHub repository:
-https://github.com/ac08/EmployeeTracker
+https://github.com/andrewcircelli/myEmployee
 
 ### Demo of the Application
 
